@@ -8,6 +8,9 @@ venv/
 multi_turn_dialogue.json
 *.local.json
 
+# Tool sandbox (M2 onward) - everything under it is a run artifact, created on first run
+M2/sandbox/
+
 # Editors / OS
 .vscode/
 .idea/

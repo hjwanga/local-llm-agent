@@ -25,7 +25,7 @@ flowchart LR
     L --> A
     A --> U
 
-    A -.->|M2| T["Tools<br/>read_file / write_file / list_dir"]
+    A -.->|M2| T["Tools<br/>list_dir / create_file / write_file / read_file"]
     A -.->|M3| S["Safety layer<br/>path allowlist + write confirmation"]
     A -.->|M4| F["FastAPI + Cloudflare Tunnel<br/>public HTTPS endpoint"]
     A -.->|M5| M["MCP server<br/>callable directly by Claude"]
@@ -40,8 +40,8 @@ Solid lines are done; dashed lines are planned.
 | Milestone | Scope | Status |
 |---|---|---|
 | **M1** | Run a local model in LM Studio, talk to its OpenAI-compatible endpoint, build a multi-turn chatbot | ✅ Done |
-| **M2** | Tool schemas + `read_file` / `write_file` / `list_dir` + the tool-calling loop | ⬜ |
-| **M3** | Agent loop with an iteration cap + execution safety (path allowlist, confirmation before writes) | ⬜ |
+| **M2** | Tool schemas + `list_dir` / `create_file` / `write_file` / `read_file`, and the agent loop with an iteration cap | ⬜ |
+| **M3** | Execution safety: path allowlist, confirmation before writes | ⬜ |
 | **M4** | Wrap as an OpenAI-compatible API with FastAPI, add bearer-token auth, expose it via Cloudflare Tunnel | ⬜ |
 | **M5** | Package as an MCP server so Claude can call it directly | ⬜ |
 
@@ -78,6 +78,14 @@ _Coming once M4 lands._
 
    Type `exit` or `quit` to stop. The conversation is written to `multi_turn_dialogue.json` and reloaded on the next run.
 
+5. Watch the model plan a four-step file task and call the tools itself:
+
+   ```bash
+   python M2/create_read_write_list_tool_schemas.py
+   ```
+
+   Files are created under `M2/sandbox/`, which is not version-controlled. Run it twice: the second run finds `test.log` already there and takes the other branch of the same request.
+
 ## Files
 
 | File | Purpose |
@@ -87,6 +95,10 @@ _Coming once M4 lands._
 | `M1/single_turn_dialogue.py` | Single-turn conversation, split into build_body / send / reply |
 | `M1/history_dialogue.py` | Side-by-side experiment: the same two questions with and without conversation history |
 | `M1/multi_turn_dialogue.py` | **The M1 program** — multi-turn conversation, persisted to JSON and reloaded across runs |
+| `M2/no_tools.py` | Baseline: the same question asked with no tools at all |
+| `M2/has_tools.py` | A hand-rolled `TOOL_CALL:` convention, parsed back out with a regex |
+| `M2/has_tool_schemas.py` | The API's own tool-calling protocol, run against four schema variants to see whether the name or the description carries the decision |
+| `M2/create_read_write_list_tool_schemas.py` | **The M2 program** — four file tools with strict preconditions; the model plans a four-step task and calls them in order |
 
 ---
 
