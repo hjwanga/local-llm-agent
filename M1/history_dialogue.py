@@ -1,8 +1,18 @@
+"""Show that the model has no memory of its own between requests.
+
+The same two turns are sent twice, and the two runs are printed side by side:
+
+1. Without history - each prompt is sent on its own, so when asked "What is my
+    name?" the assistant has never seen the name and cannot answer.
+2. With history - the first prompt, the assistant's reply, and the second
+    prompt are sent together in one messages list, so the answer is there.
+"""
+
 import json, urllib.request
 BASE  = "http://localhost:1234/v1"
 MODEL = "qwen/qwen3.5-9b"
 HEAD  = {"Content-Type": "application/json", "User-Agent": "Mozilla/5.0"}
-RULE = "Use English for the conversation."
+SYSTEM = "Use English for the conversation."
 CHAT_ENDPOINT = BASE + "/chat/completions"
 
 def role_system(content):
@@ -23,12 +33,12 @@ def chat(messages):
 
 first_prompt = "My name is David."
 second_prompt = "What is my name?"
-first_reply  = chat([role_system(RULE), role_user(first_prompt)])
-second_reply = chat([role_system(RULE), role_user(second_prompt)])
+first_reply  = chat([role_system(SYSTEM), role_user(first_prompt)])
+second_reply = chat([role_system(SYSTEM), role_user(second_prompt)])
 print("[No Memory][1st]", "\n User: ",first_prompt, "\n Assistant: ", first_reply)
 print("[No Memory][2nd]", "\n User: ",second_prompt, "\n Assistant: ", second_reply)
 
-memory_reply = chat([role_system(RULE),
+memory_reply = chat([role_system(SYSTEM),
                     role_user(first_prompt),
                     role_assistant(first_reply),
                     role_user(second_prompt)])

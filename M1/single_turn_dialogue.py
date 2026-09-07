@@ -1,3 +1,16 @@
+"""Ask the local model a single question, with the request split into helpers.
+
+Same one-shot exchange as api_test_chat_completions.py, but the call is broken
+into the four steps every later script reuses:
+
+1. build_body(prompt) - wrap the system rule and the user turn into a JSON body.
+2. send(body)         - POST the body and return the decoded response.
+3. reply(data)        - pull choices[0].message.content out of the response.
+4. chat(prompt)       - chain the three above into one call.
+
+No history is kept, so each chat() call starts from an empty conversation.
+"""
+
 import json, urllib.request
 BASE  = "http://localhost:1234/v1"
 MODEL = "qwen/qwen3.5-9b"

@@ -1,3 +1,15 @@
+"""Run an interactive chatbot whose conversation survives restarts.
+
+Extends history_dialogue.py from two hard-coded turns into a REPL:
+
+1. Load any earlier conversation from multi_turn_dialogue.json.
+2. Read a line from the user, append it to messages, and send the whole list
+    so the model sees the full history on every request.
+3. Append the reply and loop; "exit", "quit", Ctrl-C or EOF ends the session.
+4. Save messages back to the JSON file on the way out, so the next run picks
+    the conversation up where this one stopped.
+"""
+
 import json, urllib.request, urllib.error, os
 BASE  = "http://localhost:1234/v1"
 MODEL = "qwen/qwen3.5-9b"

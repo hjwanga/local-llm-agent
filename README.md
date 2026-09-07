@@ -66,14 +66,14 @@ _Coming once M4 lands._
 2. Confirm the server is up and note the model id it reports:
 
    ```bash
-   python api_test_list_models.py
+   python M1/api_test_list_models.py
    ```
 
 3. Put that model id into the `MODEL` constant at the top of each script
 4. Start a multi-turn conversation:
 
    ```bash
-   python multi_turn_dialogue.py
+   python M1/multi_turn_dialogue.py
    ```
 
    Type `exit` or `quit` to stop. The conversation is written to `multi_turn_dialogue.json` and reloaded on the next run.
@@ -82,11 +82,11 @@ _Coming once M4 lands._
 
 | File | Purpose |
 |---|---|
-| `api_test_list_models.py` | Confirm the LM Studio server is alive; list available model ids |
-| `api_test_chat_completions.py` | The smallest possible single API call |
-| `single_turn_dialogue.py` | Single-turn conversation, split into build_body / send / reply |
-| `history_dialogue.py` | Side-by-side experiment: the same two questions with and without conversation history |
-| `multi_turn_dialogue.py` | **The M1 program** — multi-turn conversation, persisted to JSON and reloaded across runs |
+| `M1/api_test_list_models.py` | Confirm the LM Studio server is alive; list available model ids |
+| `M1/api_test_chat_completions.py` | The smallest possible single API call |
+| `M1/single_turn_dialogue.py` | Single-turn conversation, split into build_body / send / reply |
+| `M1/history_dialogue.py` | Side-by-side experiment: the same two questions with and without conversation history |
+| `M1/multi_turn_dialogue.py` | **The M1 program** — multi-turn conversation, persisted to JSON and reloaded across runs |
 
 ---
 
