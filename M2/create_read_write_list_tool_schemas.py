@@ -21,6 +21,23 @@ Run it a second time and the sandbox is no longer empty:
 4. Assistant: tool_calls: read_file
 5. Tool: Hello World!
 6. Assistant: test.log already exists; it holds "Hello World!".
+
+e.g. tool_calls is a list of dicts, each with an id and a function.
+    {
+      "role": "assistant",
+      "content": "",
+      "reasoning_content": "",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "sFRpo8ba7mimMjXUcUg0u6y9n9MxUkEf",
+          "function": {
+            "name": "list_dir",
+            "arguments": "{\"path\":\".\"}"
+          }
+        }
+      ]
+    }
 """
 
 import json, os, urllib.request
@@ -159,6 +176,7 @@ print(f"[User] {QUESTION}")
 # comes back without tool_calls is the answer.
 for round_no in range(1, MAX_ITERATIONS + 1):
     print(f"\n=== round {round_no} ===")
+    # 1.Think
     msg = chat(messages)
 
     tool_calls = msg.get("tool_calls")
@@ -173,8 +191,10 @@ for round_no in range(1, MAX_ITERATIONS + 1):
 
     messages.append(msg)   # the assistant message goes back verbatim, tool_calls and all
     for tool_call in tool_calls:
+        # 2.Act
         result = run_tool(tool_call)
         print(f"[Tool] {tool_call['function']['name']} returned {result!r}")
+        # 3.Observe
         messages.append({"role": "tool",
                          "tool_call_id": tool_call["id"],   # ties the result back to which call it answers
                          "content": result})
